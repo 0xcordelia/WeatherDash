@@ -6,10 +6,35 @@ class WeatherDash {
     }
     
     init() {
+        this.setupEventListeners();
         this.getCurrentLocation();
     }
     
+    setupEventListeners() {
+        const searchBtn = document.getElementById('searchBtn');
+        const cityInput = document.getElementById('cityInput');
+        
+        searchBtn.addEventListener('click', () => this.handleSearch());
+        cityInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleSearch();
+            }
+        });
+    }
+    
+    handleSearch() {
+        const cityInput = document.getElementById('cityInput');
+        const city = cityInput.value.trim();
+        
+        if (city) {
+            this.showLoading();
+            this.fetchWeatherByCity(city);
+            cityInput.value = '';
+        }
+    }
+    
     getCurrentLocation() {
+        this.showLoading();
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => this.fetchWeatherByCoords(position.coords.latitude, position.coords.longitude),
@@ -47,6 +72,7 @@ class WeatherDash {
         const description = data.weather[0].description;
         const location = `${data.name}, ${data.sys.country}`;
         
+        this.hideLoading();
         this.updateDisplay(temp, description, location);
     }
     
@@ -61,7 +87,24 @@ class WeatherDash {
     }
     
     showError() {
+        this.hideLoading();
         this.updateDisplay('--', 'Unable to load weather', 'Please try again');
+    }
+    
+    showLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        const weatherInfo = document.querySelector('.weather-info');
+        
+        if (spinner) spinner.classList.add('show');
+        if (weatherInfo) weatherInfo.classList.add('loading');
+    }
+    
+    hideLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        const weatherInfo = document.querySelector('.weather-info');
+        
+        if (spinner) spinner.classList.remove('show');
+        if (weatherInfo) weatherInfo.classList.remove('loading');
     }
 }
 
