@@ -72,8 +72,16 @@ class WeatherDash {
         const description = data.weather[0].description;
         const location = `${data.name}, ${data.sys.country}`;
         
+        const details = {
+            feelsLike: Math.round(data.main.feels_like),
+            humidity: data.main.humidity,
+            windSpeed: Math.round(data.wind.speed * 3.6),
+            pressure: data.main.pressure
+        };
+        
         this.hideLoading();
         this.updateDisplay(temp, description, location);
+        this.updateDetails(details);
     }
     
     updateDisplay(temp, description, location) {
@@ -84,6 +92,18 @@ class WeatherDash {
         if (tempElement) tempElement.textContent = `${temp}°C`;
         if (descElement) descElement.textContent = description;
         if (locationElement) locationElement.textContent = location;
+    }
+    
+    updateDetails(details) {
+        const feelsLikeEl = document.getElementById('feelsLike');
+        const humidityEl = document.getElementById('humidity');
+        const windSpeedEl = document.getElementById('windSpeed');
+        const pressureEl = document.getElementById('pressure');
+        
+        if (feelsLikeEl) feelsLikeEl.textContent = `${details.feelsLike}°C`;
+        if (humidityEl) humidityEl.textContent = `${details.humidity}%`;
+        if (windSpeedEl) windSpeedEl.textContent = `${details.windSpeed} km/h`;
+        if (pressureEl) pressureEl.textContent = `${details.pressure} hPa`;
     }
     
     showError() {

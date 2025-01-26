@@ -144,3 +144,38 @@ header p {
 .weather-info.loading .location {
     opacity: 0.5;
 }
+
+.weather-details {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(116, 185, 255, 0.1);
+    border-radius: 10px;
+}
+
+.detail-label {
+    color: #636e72;
+    font-size: 0.95rem;
+}
+
+.detail-value {
+    color: #2d3436;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+    .weather-details {
+        grid-template-columns: 1fr;
+    }
+}
