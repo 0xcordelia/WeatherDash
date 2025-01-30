@@ -75,6 +75,30 @@ header p {
     background: #00a085;
 }
 
+.controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.unit-toggle {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #0984e3;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unit-toggle:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+}
+
 .current-weather {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
@@ -83,10 +107,23 @@ header p {
     backdrop-filter: blur(10px);
 }
 
-.current-weather h2 {
+.weather-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+}
+
+.current-weather h2 {
+    margin: 0;
     color: #2d3436;
     font-weight: 400;
+}
+
+.date-time {
+    color: #636e72;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .weather-info {
@@ -202,6 +239,12 @@ header p {
     
     #cityInput, #searchBtn {
         width: 100%;
+    }
+    
+    .weather-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
     
     .current-weather {

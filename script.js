@@ -3,17 +3,22 @@ class WeatherDash {
         this.apiKey = 'demo-key';
         this.baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
         this.recentSearches = this.loadRecentSearches();
+        this.isCelsius = true;
+        this.currentData = null;
         this.init();
     }
     
     init() {
         this.setupEventListeners();
+        this.updateDateTime();
+        this.startDateTimeUpdate();
         this.getCurrentLocation();
     }
     
     setupEventListeners() {
         const searchBtn = document.getElementById('searchBtn');
         const cityInput = document.getElementById('cityInput');
+        const unitToggle = document.getElementById('unitToggle');
         
         searchBtn.addEventListener('click', () => this.handleSearch());
         cityInput.addEventListener('keypress', (e) => {
@@ -21,6 +26,7 @@ class WeatherDash {
                 this.handleSearch();
             }
         });
+        unitToggle.addEventListener('click', () => this.toggleUnit());
     }
     
     handleSearch() {
@@ -89,14 +95,16 @@ class WeatherDash {
     }
     
     displayWeather(data) {
-        const temp = Math.round(data.main.temp);
+        this.currentData = data;
+        
+        const temp = this.isCelsius ? Math.round(data.main.temp) : Math.round(this.celsiusToFahrenheit(data.main.temp));
         const description = data.weather[0].description;
         const location = `${data.name}, ${data.sys.country}`;
         const weatherCode = data.weather[0].main;
         const icon = this.getWeatherIcon(weatherCode, data.weather[0].id);
         
         const details = {
-            feelsLike: Math.round(data.main.feels_like),
+            feelsLike: this.isCelsius ? Math.round(data.main.feels_like) : Math.round(this.celsiusToFahrenheit(data.main.feels_like)),
             humidity: data.main.humidity,
             windSpeed: Math.round(data.wind.speed * 3.6),
             pressure: data.main.pressure
@@ -114,7 +122,9 @@ class WeatherDash {
         const locationElement = document.querySelector('.location');
         const iconElement = document.getElementById('weatherIcon');
         
-        if (tempElement) tempElement.textContent = `${temp}°C`;
+        const unit = this.isCelsius ? '°C' : '°F';
+        
+        if (tempElement) tempElement.textContent = `${temp}${unit}`;
         if (descElement) descElement.textContent = description;
         if (locationElement) locationElement.textContent = location;
         if (iconElement) iconElement.textContent = icon;
@@ -126,7 +136,9 @@ class WeatherDash {
         const windSpeedEl = document.getElementById('windSpeed');
         const pressureEl = document.getElementById('pressure');
         
-        if (feelsLikeEl) feelsLikeEl.textContent = `${details.feelsLike}°C`;
+        const unit = this.isCelsius ? '°C' : '°F';
+        
+        if (feelsLikeEl) feelsLikeEl.textContent = `${details.feelsLike}${unit}`;
         if (humidityEl) humidityEl.textContent = `${details.humidity}%`;
         if (windSpeedEl) windSpeedEl.textContent = `${details.windSpeed} km/h`;
         if (pressureEl) pressureEl.textContent = `${details.pressure} hPa`;
@@ -202,6 +214,46 @@ class WeatherDash {
         };
         
         return iconMap[weatherCode] || '🌤️';
+    }
+    
+    celsiusToFahrenheit(celsius) {
+        return (celsius * 9/5) + 32;
+    }
+    
+    toggleUnit() {
+        this.isCelsius = !this.isCelsius;
+        const unitToggle = document.getElementById('unitToggle');
+        
+        if (unitToggle) {
+            unitToggle.textContent = this.isCelsius ? '°F' : '°C';
+        }
+        
+        if (this.currentData) {
+            this.displayWeather(this.currentData);
+        }
+    }
+    
+    updateDateTime() {
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        
+        const dateTimeStr = now.toLocaleDateString('en-US', options);
+        const dateTimeEl = document.getElementById('dateTime');
+        
+        if (dateTimeEl) {
+            dateTimeEl.textContent = dateTimeStr;
+        }
+    }
+    
+    startDateTimeUpdate() {
+        setInterval(() => this.updateDateTime(), 1000);
     }
 }
 
